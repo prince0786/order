@@ -43,6 +43,15 @@ jobs:
       run: |
         docker push ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
+    - name: Configure ACR access for Container App   # <-- REQUIRED FIX
+      run: |
+        az containerapp registry set \
+          --name ${{ secrets.CONTAINER_APP }} \
+          --resource-group ${{ secrets.RESOURCE_GROUP }} \
+          --server ${{ secrets.ACR_LOGIN_SERVER }} \
+          --username ${{ secrets.ACR_USERNAME }} \
+          --password ${{ secrets.ACR_PASSWORD }}
+
     - name: Deploy to Azure Container Apps
       run: |
         az containerapp update \
